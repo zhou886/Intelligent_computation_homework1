@@ -43,6 +43,8 @@ def train(network_module:Network) -> float:
             tmp = zeros(len(targets), 10)
             for i in range(len(targets)):
                 tmp[i][targets[i]] = 1
+            if cuda.is_available():
+                tmp = tmp.cuda()
             targets = tmp
 
             output = network_module(imgs)
@@ -66,6 +68,8 @@ def train(network_module:Network) -> float:
                 tmp = zeros(len(targets), 10)
                 for i in range(len(targets)):
                     tmp[i][targets[i]] = 1
+                if cuda.is_available():
+                    tmp = tmp.cuda()
             
                 output = network_module(imgs)
                 loss = loss_function_MSE(output, tmp)
