@@ -8,11 +8,11 @@ from network import Network
 
 def train(network_module:Network) -> float:
     '''
-    接受一个CNN网络模型,返回它在测试集上的总损失
+    接受一个CNN网络模型,返回它最后一轮在测试集上的总正确率
     '''
     epoch = 50
-    batch_size = 512
-    learning_rate = 0.001
+    batch_size = 4096
+    learning_rate = 0.002
 
     train_set = datasets.MNIST(r'./MINST', train=True, transform=transforms.ToTensor(), download=True)
     test_set = datasets.MNIST(r'./MINST', train=False, transform=transforms.ToTensor(), download=True)
@@ -21,7 +21,7 @@ def train(network_module:Network) -> float:
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=True)
 
     loss_function_MSE = MSELoss()
-    optimizer = SGD(network_module.parameters(), lr=learning_rate)
+    optimizer = Adam(network_module.parameters(), lr=learning_rate)
 
     if cuda.is_available():
         network_module = network_module.cuda()
@@ -32,7 +32,7 @@ def train(network_module:Network) -> float:
     total_test_accuracy = 0
 
     for i in range(epoch):
-
+        print('epoch:', i)
         network_module.train()
         for data in train_loader:
             imgs, targets = data
@@ -78,5 +78,6 @@ def train(network_module:Network) -> float:
                 total_test_accuracy += accuracy
         
         total_test_accuracy = 1.0*total_test_accuracy/test_set_size
+        print('total_test_accuracy:', total_test_accuracy)
     
-    return total_test_loss
+    return total_test_accuracy.item()

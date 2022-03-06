@@ -128,24 +128,18 @@ def main():
 
     # 进行迭代
     for iteration in range(iteration_size):
-        print(iteration)
+        print('iteration: ', iteration)
         fitness = []
         for i in range(population_size):
-            individual_fitness_list = []
-
-            # 对每个个体分别构造出对应的网络模型并进行5次训练
-            for cnt in range(5):
-                network_module = Network(population[i])
-                loss = train(network_module)
-                individual_fitness_list.append(loss)
-
-            # 取5次训练结果LOSS的中位数作为该个体的适应度
-            individual_fitness_list.sort()
-            fitness.append(individual_fitness_list[2])
+            print('individual_id: ', i)
+            # 对每个个体分别构造出对应的网络模型并进行1次训练,把正确率作为适应度
+            network_module = Network(population[i])
+            accuracy = train(network_module)
+            fitness.append(accuracy)
 
             # 和结果比较并更新结果
-            if individual_fitness_list[2] > result[0]:
-                result[0] = individual_fitness_list[2]
+            if accuracy > result[0]:
+                result[0] = accuracy
                 result[1] = list(population[i])
             
 
